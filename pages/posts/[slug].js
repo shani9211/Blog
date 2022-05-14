@@ -5,29 +5,16 @@ import BlogPost from '../../component/BlogPost'
 import Layout from '../../component/Layout'
 
 
- const Slug = () => {
-    const router = useRouter()
-    const {slug } = router.query;
+ const Slug = ({myBlogs}) => {
+ 
     const [blogs, setBlogs] = useState([])
-    useEffect(() => {
-        if (!router.isReady) {
-         return   
-        }
-        fetch(`http://localhost:3000/api/getBlog?slug=${slug}`).then((a)=>{
-          return a.json();})
-       .then((data)=>{
-          console.log(data,"fecth api Blog Data")
-          setBlogs(data);
-        })
-      
-        
-        }, [router.isReady,slug])
-    console.log(blogs,"blogs data shown")
+
+    console.log(myBlogs,"blogs data shown")
   
     return (
-       <Layout title={slug} description="Individual Blog Page">
+       <Layout title="ttle" description="Individual Blog Page">
             <Container>
-        <BlogPost slug={slug} blogs={blogs}/>
+        <BlogPost  blogs={myBlogs}/>
     </Container>
        </Layout>
     )
@@ -36,5 +23,14 @@ import Layout from '../../component/Layout'
 
   export default Slug
 
+  
 
-
+  export async function getServerSideProps(context) {
+ const {slug}=context.query;
+ console.log(slug,"slug kya hai")
+   const data= await fetch(`http://localhost:3000/api/getBlog?slug=${slug}`);
+   const myBlogs= await data.json();
+   return {
+     props: {myBlogs}, // will be passed to the page component as props
+   }
+ }

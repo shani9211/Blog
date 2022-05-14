@@ -4,21 +4,12 @@ import Link from "next/link";
 import { Box, Typography ,Grid} from '@mui/material';
 
 
-function Blog() {
+function Blog({AllBlogs}) {
 
   const [blogs, setBlogs] = useState([])
 
-  useEffect(() => {
-  fetch("http://localhost:3000/api/blogs").then((a)=>{
-    return a.json();})
- .then((data)=>{
-    console.log(data,"fecth api Blog Data")
-    setBlogs(data);
-  })
 
-  
-  }, [])
-  
+  console.log(AllBlogs,"check All List Bloigs")
   return (
     <Layout title="SOBlog | Blog " description="this iss Blog pages"> 
     
@@ -27,7 +18,7 @@ function Blog() {
           </Box>
        
     <Grid container spacing={3}>
-    {blogs.map((blogList,index)=>(
+    {AllBlogs.map((blogList,index)=>(
         <Grid item xs={4} key={blogList.slug} >
            
         <Box  sx={{borderRadius:"10px",background:"#8fafce",height:"200px",padding:2.4,}}>
@@ -51,3 +42,15 @@ function Blog() {
 }
 
 export default Blog
+
+
+
+export async function getServerSideProps(context) {
+  console.log(context,"ye context hai")
+
+ const data= await fetch("http://localhost:3000/api/blogs");
+ const AllBlogs= await data.json();
+  return {
+    props: {AllBlogs}, // will be passed to the page component as props
+  }
+}
